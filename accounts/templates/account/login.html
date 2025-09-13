@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% load widget_tweaks %}
+
+{% block title %}Login - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[80vh]">
+  <div class="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
+    
+    <!-- Header -->
+    <div class="flex flex-col items-center mb-6">
+      <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
+        CM
+      </div>
+      <h2 class="text-2xl font-bold mt-4 text-gray-800 dark:text-gray-100">Sign in to your account</h2>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Access your contact manager dashboard</p>
+    </div>
+
+    <!-- Login Form -->
+    <form method="post" action="{% url 'account_login' %}" class="space-y-5">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>
+        {{ form.login.label_tag }}
+        {{ form.login|add_class:"w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100" }}
+      </div>
+      <div>
+        {{ form.password.label_tag }}
+        {{ form.password|add_class:"w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100" }}
+      </div>
+
+      <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center space-x-2">
+          {{ form.remember }}
+          <label for="id_remember" class="text-gray-600 dark:text-gray-300">Remember me</label>
+        </div>
+        <a href="{% url 'account_reset_password' %}" class="text-indigo-600 hover:underline">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+        Login
+      </button>
+    </form>
+
+    <!-- Social Logins -->
+    <div class="mt-6">
+      <p class="text-gray-500 dark:text-gray-400 text-sm text-center">Or continue with</p>
+      <div class="flex space-x-3 mt-3">
+        <a href="{% provider_login_url 'google' %}" class="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-center">Google</a>
+        <a href="{% provider_login_url 'github' %}" class="flex-1 px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-center">GitHub</a>
+      </div>
+    </div>
+
+    <!-- Signup Link -->
+    <p class="mt-6 text-sm text-gray-600 dark:text-gray-300 text-center">
+      Don’t have an account? 
+      <a href="{% url 'account_signup' %}" class="text-indigo-600 hover:underline">Register</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

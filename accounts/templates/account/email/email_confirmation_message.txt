@@ -1,0 +1,18 @@
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans with site_name=current_site.name %}
+Hi {{ user.username }},
+
+You're almost ready! Please confirm your email address for {{ site_name }}.
+{% endblocktrans %}
+
+Confirm your email by clicking the link below:
+{{ activate_url }}
+
+If the link above does not work, copy and paste it into your browser:
+{{ activate_url }}
+
+---
+
+© 2025 Contact Manager. Built by Peter Olayemi (https://github.com/PeterOlayemi)
+{% endautoescape %}

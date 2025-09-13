@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title %}Manage Emails - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">
+    <i data-feather="mail" class="w-6 h-6 text-indigo-600"></i>
+    Manage Your Emails
+  </h2>
+  <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+    Below you can see your current email addresses, set a primary one, and verify them.
+  </p>
+
+  {% if user.emailaddress_set.all %}
+    <form action="{% url 'account_email' %}" method="post" class="space-y-4">
+      {% csrf_token %}
+      <div class="overflow-x-auto rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <table class="w-full text-sm border-collapse">
+          <thead class="bg-gray-50 dark:bg-gray-800/50">
+            <tr>
+              <th class="py-3 px-4 text-left font-semibold">Email Address</th>
+              <th class="py-3 px-4 text-left font-semibold">Status</th>
+              <th class="py-3 px-4 text-left font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            {% for emailaddress in user.emailaddress_set.all %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+              <td class="py-3 px-4">
+                <label for="email_radio_{{ forloop.counter }}" class="flex items-center space-x-2 cursor-pointer">
+                  <input id="email_radio_{{ forloop.counter }}" type="radio" name="email" value="{{ emailaddress.email }}" {% if emailaddress.primary %}checked{% endif %} class="text-indigo-600 focus:ring-indigo-500">
+                  <span>{{ emailaddress.email }}</span>
+                </label>
+              </td>
+              <td class="py-3 px-4">
+                {% if emailaddress.verified %}
+                  <span class="inline-flex items-center text-green-600 dark:text-green-400 gap-1">
+                    <i data-feather="check-circle" class="w-4 h-4"></i> Verified
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center text-yellow-600 dark:text-yellow-400 gap-1">
+                    <i data-feather="alert-circle" class="w-4 h-4"></i> Unverified
+                  </span>
+                {% endif %}
+                {% if emailaddress.primary %}
+                  <span class="ml-2 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Primary</span>
+                {% endif %}
+              </td>
+              <td class="py-3 px-4 space-x-2">
+                {% if not emailaddress.verified %}
+                  <button name="action_send" value="{{ emailaddress.email }}" class="inline-flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                    <i data-feather="refresh-ccw" class="w-4 h-4"></i> Resend
+                  </button>
+                {% endif %}
+                {% if not emailaddress.primary %}
+                  <button name="action_remove" value="{{ emailaddress.email }}" class="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                    <i data-feather="trash-2" class="w-4 h-4"></i> Remove
+                  </button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <button type="submit" name="action_primary" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 inline-flex items-center gap-2">
+          <i data-feather="star" class="w-4 h-4"></i> Set Primary
+        </button>
+      </div>
+    </form>
+  {% else %}
+    <p class="text-gray-600 dark:text-gray-400 mb-6">You don’t have any email addresses connected yet.</p>
+  {% endif %}
+
+  <!-- Add new email -->
+  <h3 class="text-lg font-semibold mt-10 mb-3 flex items-center gap-2">
+    <i data-feather="plus-circle" class="w-5 h-5 text-green-600"></i> Add New Email
+  </h3>
+  <form method="post" action="{% url 'account_email' %}" class="space-y-4">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div>
+      {{ form.email.label_tag }}
+      {{ form.email|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-gray-100" }}
+      {% if form.email.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ form.email.errors|striptags }}</p>
+      {% endif %}
+    </div>
+    <button type="submit" name="action_add" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 inline-flex items-center gap-2">
+      <i data-feather="plus" class="w-4 h-4"></i> Add Email
+    </button>
+  </form>
+</div>
+{% endblock %}

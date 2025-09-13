@@ -1,0 +1,37 @@
+[x-cloak] { display: none !important; }
+
+.alert {
+  transition: all 0.3s ease-in-out;
+}
+
+#themeKnob {
+  transition: transform 0.25s ease;
+}
+
+/* Extra polish beyond default Tailwind */
+.glass {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+}
+.dark .glass {
+    background: rgba(17,24,39,0.55);
+}
+/* toast */
+.toast-enter {
+    transform: translateY(12px);
+    opacity: 0;
+}
+.toast-show {
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform .18s ease, opacity .18s ease;
+}
+
+/* small improvements */
+.table-fixed-layout td, .table-fixed-layout th {
+    word-wrap: break-word;
+}
+/* avatar grid for mobile */
+@media (max-width: 640px) {
+    .hide-mobile { display: none; }
+}

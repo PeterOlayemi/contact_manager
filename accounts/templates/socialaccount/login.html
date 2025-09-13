@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Social Login - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+  <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+    
+    <!-- Icon -->
+    <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+      <i data-feather="log-in" class="w-7 h-7"></i>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+      {% blocktrans with provider_name=provider.name %}
+        Continue with {{ provider_name }}
+      {% endblocktrans %}
+    </h2>
+
+    <!-- Subtext -->
+    <p class="text-gray-600 dark:text-gray-400 mb-6">
+      {% blocktrans with provider_name=provider.name %}
+        You are about to sign in using your {{ provider_name }} account.
+      {% endblocktrans %}
+    </p>
+
+    <!-- Form -->
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <button type="submit"
+        class="w-full py-2 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow transition">
+        {% trans "Continue" %}
+      </button>
+    </form>
+
+    <!-- Back to login -->
+    <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+      {% trans "Changed your mind?" %}
+      <a href="{% url 'account_login' %}" class="text-indigo-600 hover:underline">
+        {% trans "Go back to login" %}
+      </a>
+    </p>
+  </div>
+</div>
+
+<script>
+  feather.replace()
+</script>
+{% endblock %}

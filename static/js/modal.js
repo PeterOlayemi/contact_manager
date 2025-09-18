@@ -102,31 +102,45 @@ async function handleSaveContact(e) {
 }
 
 let deletingId = null;
+let deletingIds = [];  // ✅ new for multi delete
 function confirmDelete(id) {
   deletingId = id;
+  deletingIds = [];
+  el('#deleteModalTitle').textContent = "Delete Contact?";
+  el('#deleteModalMessage').textContent = "Are you sure you want to delete this contact?";
+  el('#deleteModal').classList.remove('hidden');
+}
+
+function confirmMultiDelete(ids) {
+  deletingId = null;
+  deletingIds = ids;
+  el('#deleteModalTitle').textContent = "Delete Selected Contacts?";
+  el('#deleteModalMessage').textContent = `Are you sure you want to delete ${ids.length} contacts?`;
   el('#deleteModal').classList.remove('hidden');
 }
 
 function closeDeleteModal() {
   deletingId = null;
+  deletingIds = [];
   el('#deleteModal').classList.add('hidden');
 }
 
 el('#confirmDeleteBtn').addEventListener('click', async () => {
-  if (!deletingId) return;
-
-  const res = await fetch(`/contacts/${deletingId}/delete-ajax/`, {
-    method: "DELETE",
-    headers: {"X-CSRFToken": getCookie("csrftoken")}
-  });
-
-  const data = await res.json();
-  if (data.success) {
-    closeDeleteModal();
-    window.location.href = "/";  // ✅ force reload home
-  } else {
-    alert("Delete failed!");
+  if (deletingId) {
+    await fetch(`/contacts/${deletingId}/delete-ajax/`, {
+      method: "DELETE",
+      headers: {"X-CSRFToken": getCookie("csrftoken")}
+    });
+  } else if (deletingIds.length > 0) {
+    for (const id of deletingIds) {
+      await fetch(`/contacts/${id}/delete-ajax/`, {
+        method: "DELETE",
+        headers: {"X-CSRFToken": getCookie("csrftoken")}
+      });
+    }
   }
+  closeDeleteModal();
+  window.location.href = "/";
 });
 
 function escapeHtml(str) {
@@ -156,6 +170,7 @@ async function viewContact(id) {
       <div class="py-2"><strong>Tags:</strong> ${(c.tags || []).map(
         t => `<span class="inline-block text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 mr-1">${escapeHtml(t)}</span>`
       ).join('')}</div>
+      <div class="py-2"><strong>Date Added:</strong> ${c.created_at || '—'}</div>
     </div>
   `;
   document.querySelector('#detailOverlay').classList.remove('hidden');

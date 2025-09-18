@@ -42,6 +42,7 @@ class HomeView(LoginRequiredMixin, ListView):
                 "note": c.note,
                 "avatar": c.image.url if c.image else None,
                 "tags": [t.name for t in c.tag.all()],
+                "created_at": c.created_at.strftime("%Y-%m-%d %H:%M"),
             }
             for c in ctx["contacts"]
         ]
@@ -146,6 +147,7 @@ def contact_list_api(request):
             "note": c.note,
             "avatar": c.image.url if c.image else None,
             "tags": [t.name for t in c.tag.all()],
+            "created_at": c.created_at.strftime("%Y-%m-%d %H:%M"),
         })
 
     # search query
@@ -186,6 +188,7 @@ def contact_list_api(request):
             "address": c.address,
             "avatar": c.image.url if c.image else None,
             "tags": [t.name for t in c.tag.all()],
+            "created_at": c.created_at.strftime("%Y-%m-%d %H:%M"),
         })
 
     return JsonResponse({

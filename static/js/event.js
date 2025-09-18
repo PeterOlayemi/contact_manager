@@ -117,6 +117,7 @@ async function render() {
     data.results.forEach(c => {
       tbody.innerHTML += `
         <tr>
+          <td class="p-3"><input type="checkbox" class="contact-checkbox" value="${c.id}"></td>
           <td class="p-3">${c.name}</td>
           <td class="p-3">${c.email || ""}</td>
           <td class="p-3">${c.phone || ""}</td>
